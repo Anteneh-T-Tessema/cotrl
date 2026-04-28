@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Random (10 attempts)",
+    "solved": 6,
+    "total": 200,
+    "solve_rate": 0.03,
+    "avg_time_ms": 0.11587890001464984
+  },
+  {
+    "name": "MCTS random (500 iter)",
+    "solved": 116,
+    "total": 200,
+    "solve_rate": 0.58,
+    "avg_time_ms": 16.132675869957893
+  },
+  {
+    "name": "Brute force (ceiling)",
+    "solved": 154,
+    "total": 200,
+    "solve_rate": 0.77,
+    "avg_time_ms": 9.102755795065605
+  }
+]
