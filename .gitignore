@@ -44,3 +44,9 @@ Thumbs.db
 # Track .vscode/settings.json for shared Pylance/extraPaths config
 !.vscode/
 !.vscode/settings.json
+
+# Docker
+.dockerignore
+
+# Node (if frontend tooling is added later)
+node_modules/

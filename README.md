@@ -2,6 +2,24 @@
 
 A production-grade AI system that combines LLM chain-of-thought reasoning, Monte Carlo Tree Search, and reinforcement learning (GRPO) to solve the Game of 24 — and continuously improves through verified feedback loops.
 
+## Live Demo
+
+```bash
+# Run locally (no GPU required)
+pip install -r requirements-web.txt
+pip install -e .
+uvicorn src.api.app:app --reload
+
+# Or with Docker
+docker-compose up
+```
+
+Then open `http://localhost:8000` — enter any four numbers (1–13) and watch the MCTS search stream live.
+
+**Deploy to Render (free tier):** connect the repo and Render auto-detects `render.yaml` — one click to deploy.
+
+---
+
 ## Tutorial
 
 New here? The illustrated tutorial walks through every component from scratch — no GPU required for Parts 0–5.

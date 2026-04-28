@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game of 24 — AI Solver</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header>
+    <div class="logo">
+      <span class="logo-icon">∑</span>
+      <span class="logo-text">Game of <strong>24</strong></span>
+    </div>
+    <nav>
+      <a href="https://github.com/Anteneh-T-Tessema/cotrl" target="_blank" class="btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge">Monte Carlo Tree Search · GRPO · Chain-of-Thought</div>
+      <h1>Make <span class="accent">24</span> from any four numbers</h1>
+      <p class="hero-sub">
+        An AI system that combines LLM reasoning and Monte Carlo Tree Search to solve the Game of 24 —
+        and continuously improves through verified feedback loops.
+      </p>
+    </section>
+
+    <!-- Solver Card -->
+    <section class="card solver-card">
+      <div class="card-header">
+        <h2>Solve a Puzzle</h2>
+        <button class="btn-ghost btn-sm" id="btn-random">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+          Random puzzle
+        </button>
+      </div>
+
+      <!-- Number inputs -->
+      <div class="number-row">
+        <div class="number-card" data-idx="0">
+          <input type="number" min="1" max="13" value="3" class="number-input" />
+          <div class="number-label">A</div>
+        </div>
+        <div class="op-symbol">·</div>
+        <div class="number-card" data-idx="1">
+          <input type="number" min="1" max="13" value="8" class="number-input" />
+          <div class="number-label">B</div>
+        </div>
+        <div class="op-symbol">·</div>
+        <div class="number-card" data-idx="2">
+          <input type="number" min="1" max="13" value="8" class="number-input" />
+          <div class="number-label">C</div>
+        </div>
+        <div class="op-symbol">·</div>
+        <div class="number-card" data-idx="3">
+          <input type="number" min="1" max="13" value="3" class="number-input" />
+          <div class="number-label">D</div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-row">
+        <div class="iter-control">
+          <label>MCTS Iterations</label>
+          <div class="iter-slider-wrap">
+            <input type="range" min="100" max="1000" step="50" value="500" id="iter-slider" />
+            <span id="iter-label">500</span>
+          </div>
+        </div>
+        <button class="btn-primary" id="btn-solve">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Solve
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap" id="progress-wrap" hidden>
+        <div class="progress-header">
+          <span class="progress-label" id="progress-label">Searching…</span>
+          <span class="progress-pct" id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+        <div class="progress-sub" id="progress-sub"></div>
+      </div>
+
+      <!-- Result -->
+      <div class="result-wrap" id="result-wrap" hidden>
+        <div class="result-solved" id="result-solved" hidden>
+          <div class="result-icon">✓</div>
+          <div class="result-body">
+            <div class="result-title">Solved!</div>
+            <div class="result-expr" id="result-expr"></div>
+            <div class="result-meta" id="result-meta"></div>
+          </div>
+        </div>
+        <div class="result-failed" id="result-failed" hidden>
+          <div class="result-icon">✕</div>
+          <div class="result-body">
+            <div class="result-title">No solution found</div>
+            <div class="result-sub">This puzzle may be unsolvable, or try more iterations.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Verify Card -->
+    <section class="card verify-card">
+      <div class="card-header">
+        <h2>Verify Your Own Expression</h2>
+      </div>
+      <p class="card-sub">Type an expression using the four numbers above and check if it equals 24.</p>
+      <div class="verify-row">
+        <input
+          type="text"
+          id="verify-input"
+          class="expr-input"
+          placeholder="e.g.  8 / (3 - 8/3)"
+          spellcheck="false"
+          autocomplete="off"
+        />
+        <button class="btn-secondary" id="btn-verify">Check</button>
+      </div>
+      <div class="verify-result" id="verify-result" hidden></div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="card how-card">
+      <div class="card-header"><h2>How It Works</h2></div>
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="how-num">1</div>
+          <div class="how-content">
+            <h3>Chain-of-Thought Prompting</h3>
+            <p>A Qwen-7B language model reasons step-by-step with few-shot examples covering easy, medium, and hard puzzles.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-num">2</div>
+          <div class="how-content">
+            <h3>Deterministic Verifier</h3>
+            <p>An AST-based evaluator checks every expression — no <code>eval()</code>, no injection. The reward signal is mathematically exact.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-num">3</div>
+          <div class="how-content">
+            <h3>Monte Carlo Tree Search</h3>
+            <p>When the LLM fails, MCTS explores the expression tree using UCB selection. Random rollout alone reaches <strong>58%</strong> solve rate — no GPU needed.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-num">4</div>
+          <div class="how-content">
+            <h3>GRPO Fine-Tuning</h3>
+            <p>Successful trajectories train the model via Group Relative Policy Optimization — no critic network, just verified solutions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benchmark -->
+    <section class="card bench-card">
+      <div class="card-header"><h2>Benchmark Results</h2></div>
+      <p class="card-sub">Measured on 200 puzzles (seed=42), no GPU required.</p>
+      <div class="bench-bars" id="bench-bars">
+        <div class="bench-row">
+          <span class="bench-name">Random (10 attempts)</span>
+          <div class="bench-bar-wrap">
+            <div class="bench-bar" style="width:3.9%"></div>
+          </div>
+          <span class="bench-pct">3%</span>
+        </div>
+        <div class="bench-row highlight">
+          <span class="bench-name">MCTS random rollout (500 iter)</span>
+          <div class="bench-bar-wrap">
+            <div class="bench-bar" style="width:75.3%"></div>
+          </div>
+          <span class="bench-pct">58%</span>
+        </div>
+        <div class="bench-row ceiling">
+          <span class="bench-name">Brute force ceiling</span>
+          <div class="bench-bar-wrap">
+            <div class="bench-bar" style="width:100%"></div>
+          </div>
+          <span class="bench-pct">77%</span>
+        </div>
+      </div>
+      <p class="bench-note">
+        MCTS reaches <strong>75% of the theoretical ceiling</strong> without any model.
+        Replacing random rollout with the fine-tuned LLM closes the remaining gap.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <span>Game of 24 — Self-Improving Logic Solver</span>
+    <a href="https://github.com/Anteneh-T-Tessema/cotrl" target="_blank">View on GitHub →</a>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

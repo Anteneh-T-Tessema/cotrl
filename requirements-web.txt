@@ -1,0 +1,7 @@
+# Minimal dependencies for the web server (no GPU, no LLM)
+# Install with: pip install -r requirements-web.txt
+
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+pydantic>=2.6.0

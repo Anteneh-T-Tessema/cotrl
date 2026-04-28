@@ -1,0 +1,17 @@
+# Render.com deployment configuration
+# One-click deploy: https://render.com/deploy
+# Free tier: 750 hours/month, 512MB RAM, spins down after 15min inactivity
+
+services:
+  - type: web
+    name: game-of-24-solver
+    runtime: python
+    buildCommand: pip install -r requirements-web.txt && pip install -e . --no-deps
+    startCommand: uvicorn src.api.app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /api/health
+    autoDeploy: true
