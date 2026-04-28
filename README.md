@@ -2,6 +2,23 @@
 
 A production-grade AI system that combines LLM chain-of-thought reasoning, Monte Carlo Tree Search, and reinforcement learning (GRPO) to solve the Game of 24 — and continuously improves through verified feedback loops.
 
+## Tutorial
+
+New here? The illustrated tutorial walks through every component from scratch — no GPU required for Parts 0–5.
+
+| Part | Topic | GPU? |
+|------|-------|------|
+| [0 — What is the Game of 24?](docs/tutorial/00-what-is-game-of-24.md) | Puzzle rules, difficulty, why it's a great RL benchmark | No |
+| [1 — System Architecture](docs/tutorial/01-architecture.md) | Three-layer design, information flow, repository map | No |
+| [2 — The Verifier](docs/tutorial/02-verifier.md) | AST-based safe evaluation, injection-resistance, brute-force labeling | No |
+| [3 — Puzzle Data](docs/tutorial/03-puzzle-data.md) | Generation, difficulty tiers, solvability labeling | No |
+| [4 — LLM + Chain-of-Thought](docs/tutorial/04-llm-and-cot.md) | Qwen-7B, CoT prompting, few-shot selection algorithm | No |
+| [5 — Monte Carlo Tree Search](docs/tutorial/05-mcts.md) | UCB selection, ExprPair state, LLM rollout policy | No |
+| [6 — GRPO Training](docs/tutorial/06-rl-training.md) | Group-relative advantage, shaped rewards, dead gradient fix | Yes |
+| [7 — Running the System](docs/tutorial/07-running.md) | Install, benchmark, train, Docker, troubleshooting | Optional |
+
+---
+
 ## Benchmark Results
 
 Measured on 200 puzzles (seed=42), no GPU required:
@@ -65,8 +82,9 @@ scripts/
 └── compare_strategies.py  GPU-free benchmark (random vs MCTS vs brute force)
 
 docs/
-├── adr/     Architecture Decision Records (model choice, RL algorithm, reward shaping)
-└── sprints/ Sprint plans with retrospectives and real benchmark numbers
+├── tutorial/ Illustrated step-by-step tutorial (Parts 0–7)
+├── adr/      Architecture Decision Records (model choice, RL algorithm, reward shaping)
+└── sprints/  Sprint plans with retrospectives and real benchmark numbers
 ```
 
 ## Setup
