@@ -1,3 +1,13 @@
+---
+title: Game of 24 Solver
+emoji: 🔢
+colorFrom: purple
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Game of 24 — Self-Improving Logic Solver
 
 A production-grade AI system that combines LLM chain-of-thought reasoning, Monte Carlo Tree Search, and reinforcement learning (GRPO) to solve the Game of 24 — and continuously improves through verified feedback loops.

@@ -6,9 +6,9 @@ services:
       context: .
       dockerfile: docker/web.Dockerfile
     ports:
-      - "8000:8000"
+      - "8000:7860"
     environment:
-      - PORT=8000
+      - PORT=7860
     volumes:
       # Hot-reload frontend in development
       - ./frontend:/app/frontend:ro
