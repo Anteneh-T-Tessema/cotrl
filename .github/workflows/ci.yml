@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pytest pytest-cov sympy loguru
+
+      - name: Run all unit tests
+        run: pytest tests/ -v --cov=src --cov-report=term-missing
+
+      - name: Enforce coverage threshold (verifier must be 90%+)
+        run: pytest tests/test_verifier.py --cov=src/verifier --cov-fail-under=90
+
+  lint:
+    name: Lint + Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install lint tools
+        run: pip install ruff mypy sympy loguru
+
+      - name: Ruff lint
+        run: ruff check src/ tests/
+
+      - name: Mypy type check (src only)
+        run: mypy src/ --ignore-missing-imports
